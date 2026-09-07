@@ -22,8 +22,8 @@ builder.Services.AddSingleton<IChatClient>(sp =>
 builder.Services.AddSingleton<DocumentService>();
 builder.Services.AddSingleton<EmbeddingService>();
 
-
-
+// Auto-ingest local files from documents folder on startup
+builder.Services.AddHostedService<DocumentFolderIngestionService>();
 
 var app = builder.Build();
 
@@ -45,4 +45,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-

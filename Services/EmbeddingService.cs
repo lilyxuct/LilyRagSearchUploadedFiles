@@ -17,9 +17,13 @@ namespace LilyRagPractices.Services
         {
             _embeddingModel = config["Embedding:Model"] ?? "nomic-embed-text";
             _expectedDimensions = config.GetValue<int?>("Embedding:ExpectedDimensions") ?? 768;
+            _http.Timeout = TimeSpan.FromSeconds(60);
         }
 
-        public async Task<float[]> GetEmbeddingAsync(string text)
+        public Task<float[]> GetEmbeddingAsync(string text) =>
+            GetEmbeddingAsync(text, CancellationToken.None);
+
+        public async Task<float[]> GetEmbeddingAsync(string text, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException("Input text cannot be empty.", nameof(text));
@@ -29,13 +33,13 @@ namespace LilyRagPractices.Services
 
             foreach (var chunk in chunks)
             {
-                vectors.Add(await GetSingleEmbeddingAsync(chunk));
+                vectors.Add(await GetSingleEmbeddingAsync(chunk, cancellationToken));
             }
 
             return AverageVectors(vectors);
         }
 
-        private async Task<float[]> GetSingleEmbeddingAsync(string text)
+        private async Task<float[]> GetSingleEmbeddingAsync(string text, CancellationToken cancellationToken)
         {
             var payload = new
             {
@@ -45,10 +49,10 @@ namespace LilyRagPractices.Services
 
             var response = await _http.PostAsync(
                 "http://localhost:11434/api/embeddings",
-                new StringContent(JsonConvert.SerializeObject(payload),
-                Encoding.UTF8, "application/json"));
+                new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json"),
+                cancellationToken);
 
-            var json = await response.Content.ReadAsStringAsync();
+            var json = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -65,10 +69,7 @@ namespace LilyRagPractices.Services
                     $"Embedding response does not contain a valid 'embedding' array. Body: {json}");
             }
 
-            var vector = embeddingToken
-                .Values<double>()
-                .Select(x => (float)x)
-                .ToArray();
+            var vector = embeddingToken.Values<double>().Select(x => (float)x).ToArray();
 
             if (vector.Length != _expectedDimensions)
             {
@@ -108,15 +109,11 @@ namespace LilyRagPractices.Services
                     throw new InvalidOperationException("Embedding size mismatch across chunks.");
 
                 for (var i = 0; i < size; i++)
-                {
                     result[i] += vector[i];
-                }
             }
 
             for (var i = 0; i < size; i++)
-            {
                 result[i] /= vectors.Count;
-            }
 
             return result;
         }

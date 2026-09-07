@@ -4,7 +4,20 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefaultItemExcludes>
+     $(DefaultItemExcludes);
+      node_modules\**;
+      frontend\node_modules\**
+    </DefaultItemExcludes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="node_modules\**" />
+    <Content Remove="node_modules\**" />
+    <None Remove="frontend\node_modules\**" />
+    <Content Remove="frontend\node_modules\**" />
+    <None Include=".github\copilot-instructions.md" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />

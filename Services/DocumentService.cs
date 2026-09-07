@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using System.Globalization;
+using Npgsql;
 
 namespace LilyRagPractices.Services
 {
@@ -35,7 +36,7 @@ namespace LilyRagPractices.Services
 
             cmd.Parameters.AddWithValue("f", filename);
             cmd.Parameters.AddWithValue("c", content);
-            cmd.Parameters.AddWithValue("e", embedding);
+            cmd.Parameters.AddWithValue("e", ToVectorLiteral(embedding));
 
             await cmd.ExecuteNonQueryAsync();
         }
@@ -71,7 +72,7 @@ namespace LilyRagPractices.Services
                   ORDER BY embedding <=> @q::vector
                   LIMIT @limit", conn);
 
-            cmd.Parameters.AddWithValue("q", queryEmbedding);
+            cmd.Parameters.AddWithValue("q", ToVectorLiteral(queryEmbedding));
             cmd.Parameters.AddWithValue("limit", limit);
 
             var results = new List<SearchResult>();
@@ -87,6 +88,12 @@ namespace LilyRagPractices.Services
             }
 
             return results;
+        }
+
+        private static string ToVectorLiteral(float[] vector)
+        {
+            return "[" + string.Join(",",
+                vector.Select(v => v.ToString("G9", CultureInfo.InvariantCulture))) + "]";
         }
     }
 }

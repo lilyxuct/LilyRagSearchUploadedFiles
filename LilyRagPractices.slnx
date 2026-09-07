@@ -1,3 +1,17 @@
 <Solution>
+  <Folder Name="/frontEnd/">
+    <File Path="frontend/.env.example" />
+    <File Path="frontend/index.html" />
+    <File Path="frontend/package.json" />
+    <File Path="frontend/vite.config.js" />
+    <File Path="frontend/.env" />
+  </Folder>
+  <Folder Name="/frontEnd/src/">
+    <File Path="frontend/src/api.js" />
+    <File Path="frontend/src/App.jsx" />
+    <File Path="frontend/src/main.jsx" />
+    <File Path="frontend/src/style.css" />
+
+  </Folder>
   <Project Path="LilyRagPractices.csproj" />
 </Solution>

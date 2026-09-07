@@ -55,7 +55,7 @@ namespace LilyRagPractices.Services
             return result is bool b && b;
         }
 
-        public async Task<List<SearchResult>> SearchAsync(float[] queryEmbedding, int limit = 5)
+        public async Task<List<SearchResult>> SearchAsync(float[] queryEmbedding, int limit = 3)
         {
             if (queryEmbedding is null || queryEmbedding.Length != ExpectedDimensions)
             {

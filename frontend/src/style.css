@@ -1,3 +1,54 @@
-﻿body
-{
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f6f7fb;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background: #111827;
+    color: #fff;
+    padding: 16px;
+}
+
+.nav {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    .nav.active {
+        background: #2563eb;
+        color: #fff;
+    }
+
+.content {
+    flex: 1;
+    padding: 24px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.message {
+    margin-top: 10px;
+    color: #1d4ed8;
 }
